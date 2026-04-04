@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="page-container">
+        <img src="{% static 'images/hgd.jpeg' %}" alt="한교동" width="300px">
+        <p class="tag">LikeLion_14th_session</p>
+        <h1 class="title">2026 멋쟁이사자처럼 {{ generation }}기</h1>
+        <h6 class="welcome">Welcome Django!</h6>
+
+        <div class="section">
+            <div class="section-title">🦁 2주차 세션 정리 🦁</div>
+            <ul>
+                <li>Mainpage 작성 : {{ info.weather }}</li>
+                <li>Secondpage 작성 : {{ info.feeling }}</li>
+                <li>{{ info.note }}</li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
