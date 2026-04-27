@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<div class="card-grid">
+    {% for blog in blogs %}
+        <div class="card">
+            <div class="card-content">
+                <h2>{{ blog.title }}</h2>
+                <p>{{ blog.summary }}</p>
+                <a href="{% url 'main:detail' blog.id %}">자세히 보기</a>
+                <div class="card-header">
+                    <p>{{ blog.writer }}</p>
+                    <p>{{ blog.pub_date }}</p>
+                </div>
+                <div class="divider"></div>
+                <p class="card-summary">{{ blog.content }}</p>
+            </div>
+
+            <div class="card-footer">
+                <div class="divider"></div>
+                <a href="{% url 'main:detail' blog.id %}">자세히 보기</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+<div>
+    <img class='add-button' src="{% static 'images/icon-add-orange.png' %}" alt="글 작성 버튼"
+         onClick="location.href='{% url 'main:new_blog' %}'">
+</div>
+{% endblock %}
