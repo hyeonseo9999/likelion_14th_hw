@@ -3,29 +3,31 @@
 {% block content %}
 {% load static %}
 <div class="card-grid">
-    {% for blog in blogs %}
+    {% for post in posts %}
         <div class="card">
             <div class="card-content">
-                <h2>{{ blog.title }}</h2>
-                <p>{{ blog.summary }}</p>
-                <a href="{% url 'main:detail' blog.id %}">자세히 보기</a>
+                <h2>{{ post.title }}</h2>
+                
+                <p class="card-summary">{{ post.summary }}</p>
+                
                 <div class="card-header">
-                    <p>{{ blog.writer }}</p>
-                    <p>{{ blog.pub_date }}</p>
+                    <p>{{ post.writer }}</p>
+                    <p>{{ post.pub_date }}</p>
                 </div>
                 <div class="divider"></div>
-                <p class="card-summary">{{ blog.content }}</p>
-            </div>
+                
+                </div>
 
             <div class="card-footer">
                 <div class="divider"></div>
-                <a href="{% url 'main:detail' blog.id %}">자세히 보기</a>
+                <a href="{% url 'main:detail' post.id %}">자세히 보기</a>
             </div>
         </div>
     {% endfor %}
 </div>
+
 <div>
     <img class='add-button' src="{% static 'images/icon-add-orange.png' %}" alt="글 작성 버튼"
-         onClick="location.href='{% url 'main:new_blog' %}'">
+         onClick="location.href='{% url 'main:new_post' %}'">
 </div>
 {% endblock %}

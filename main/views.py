@@ -17,47 +17,47 @@ def mainpage(request):
 def secondpage(request):
     return render(request, 'main/secondpage.html')
 
-def new_blog(request):
+def new_post(request): 
     return render(request, 'main/new_blog.html')
 
 def create(request):
-    new_blog = Blog()
+    new_post = Post() 
 
-    new_blog.title = request.POST['title']
-    new_blog.writer = request.POST['writer']
-    new_blog.pub_date = request.POST['pub_date']
-    new_blog.content = request.POST['content']
-    new_blog.category = request.POST['category']
+    new_post.title = request.POST['title']
+    new_post.writer = request.POST['writer']
+    new_post.pub_date = request.POST['pub_date']
+    new_post.content = request.POST['content']
+    new_post.category = request.POST['category']
 
-    new_blog.save()
+    new_post.save()
 
-    return redirect('main:detail', new_blog.id)
+    return redirect('main:detail', new_post.id)
 
 def blogpage(request):
-    blogs = Blog.objects.all()
-    return render(request, 'main/blogpage.html', {'blogs': blogs})
+    posts = Post.objects.all() 
+    return render(request, 'main/blogpage.html', {'posts': posts})
 
-def detail(request, blog_id):
-    blog = get_object_or_404(Blog, pk=blog_id)
-    return render(request, 'main/detail.html', {'blog': blog})
+def detail(request, post_id): 
+    post = get_object_or_404(Post, pk=post_id) 
+    return render(request, 'main/detail.html', {'post': post})
 
-def edit(request, blog_id):
-    edit_blog = get_object_or_404(Blog, pk=blog_id)
-    return render(request, 'main/edit.html', {"blog": edit_blog})
+def edit(request, post_id): 
+    edit_post = get_object_or_404(Post, pk=post_id) 
+    return render(request, 'main/edit.html', {"post": edit_post})
 
-def update(request, blog_id):
-    update_blog = get_object_or_404(Blog, pk=blog_id)
-    update_blog.title = request.POST['title']
-    update_blog.writer = request.POST['writer']
-    update_blog.pub_date = request.POST['pub_date']
-    update_blog.content = request.POST['content']
-    update_blog.category = request.POST['category']
-    update_blog.save()
+def update(request, post_id): 
+    update_post = get_object_or_404(Post, pk=post_id) 
+    update_post.title = request.POST['title']
+    update_post.writer = request.POST['writer']
+    update_post.pub_date = request.POST['pub_date']
+    update_post.content = request.POST['content']
+    update_post.category = request.POST['category']
+    update_post.save()
 
-    return redirect('main:detail', update_blog.id)
+    return redirect('main:detail', update_post.id)
 
-def delete(request, blog_id):
-    delete_blog = get_object_or_404(Blog, pk=blog_id)
-    delete_blog.delete()
+def delete(request, post_id): 
+    delete_post = get_object_or_404(Post, pk=post_id) 
+    delete_post.delete()
 
     return redirect('main:blogpage')
