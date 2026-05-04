@@ -18,14 +18,13 @@
         </div>
 
         <div class="form-group">
-            <label for="category">카테고리</label>
-            <input type="text" id="category" name="category" value="{{ blog.category }}" required>
-        </div>
-
-        <div class="form-group">
-            <label for="writer">작성자</label>
-            <input type="text" id="writer" name="writer" value="{{ blog.writer }}" required>
-        </div>
+    <label for="category">카테고리</label>
+    <select name="category" id="category">
+        <option value="hobby" {% if blog.category == 'hobby' %}selected{% endif %}>취미</option>
+        <option value="study" {% if blog.category == 'study' %}selected{% endif %}>공부</option>
+        <option value="daily" {% if blog.category == 'daily' %}selected{% endif %}>일상</option>
+    </select>
+</div>
 
         <div class="form-group">
             <label for="pub_date">작성일</label>

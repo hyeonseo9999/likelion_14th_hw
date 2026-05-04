@@ -35,24 +35,16 @@ def signup(request):
                 password=request.POST['password'],
             )
 
-            nickname = request.POST['nickname']
-            major = request.POST['major']
-            introduction = request.POST.get('introduction', '')
-            profile_image = request.FILES.get('profile_image')
-
-            profile = Profile(
+            profile = Profile.objects.create(
                 user=newuser,
-                nickname=nickname,
-                major=major,
-                introduction=introduction,
-                profile_image=profile_image,
+                nickname=request.POST['nickname'],
+                major=request.POST['major'],
+                introduction=request.POST.get('introduction', ''),
+                profile_image=request.FILES.get('profile_image')
             )
-            profile.save()
 
             auth.login(request, newuser)
             return redirect('main:blogpage')
-        
         else:
             return render(request, 'accounts/signup.html', {'error': '비밀번호가 일치하지 않습니다.'})
-                            
     return render(request, 'accounts/signup.html')

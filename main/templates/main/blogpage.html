@@ -1,33 +1,73 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-{% load static %}
-<div class="card-grid">
-    {% for post in posts %}
-        <div class="card">
-            <div class="card-content">
-                <h2>{{ post.title }}</h2>
-                
-                <p class="card-summary">{{ post.summary }}</p>
-                
-                <div class="card-header">
-                    <p>{{ post.writer }}</p>
-                    <p>{{ post.pub_date }}</p>
-                </div>
-                <div class="divider"></div>
-                
-                </div>
+<div class="list-wrapper" style="padding: 40px;">
+    
+    {% if is_mypage %}
+        <div style="margin-bottom: 40px; padding: 30px; background-color: #fff; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee; display: flex; align-items: center; gap: 30px;">
+            
+            <div style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; background-color: #f5f5f5; flex-shrink: 0; border: 1px solid #ddd;">
+                {% if user.profile.profile_image %}
+                    <img src="{{ user.profile.profile_image.url }}" alt="프로필 사진" style="width: 100%; height: 100%; object-fit: cover;">
+                {% else %}
+                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 50px;">🦁</div>
+                {% endif %}
+            </div>
 
-            <div class="card-footer">
-                <div class="divider"></div>
-                <a href="{% url 'main:detail' post.id %}">자세히 보기</a>
+            <div style="flex-grow: 1;">
+                <h2 style="margin: 0 0 10px 0; color: #333; font-size: 24px;">
+                    {{ user.username }} 
+                    <span style="font-size: 16px; color: #E65C00; font-weight: normal;">({{ user.profile.nickname|default:"닉네임 미설정" }})</span>
+                </h2>
+                
+                <p style="margin: 5px 0; font-size: 15px; color: #555;">
+                    <strong>🎓 전공:</strong> {{ user.profile.major|default:"전공 미설정" }}
+                </p>
+                
+                <p style="margin: 15px 0 0 0; font-size: 15px; color: #444; background-color: #FFF6F2; padding: 12px; border-radius: 8px; border-left: 4px solid #E65C00;">
+                    "{{ user.profile.introduction|default:"한줄소개가 없습니다." }}"
+                </p>
             </div>
         </div>
-    {% endfor %}
-</div>
+        <h3 style="color: #333; margin-bottom: 20px;">📝 내가 작성한 글 모두 보기</h3>
+    {% endif %}
 
-<div>
-    <img class='add-button' src="{% static 'images/icon-add-orange.png' %}" alt="글 작성 버튼"
-         onClick="location.href='{% url 'main:new_post' %}'">
+    <div class="card-grid">
+    {% for post in posts %}
+        <div class="card" style="margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background-color: #fff;">
+            
+            {% if post.image %}
+                <img src="{{ post.image.url }}" alt="{{ post.title }}" style="width: 100%; height: 200px; object-fit: cover; border-bottom: 1px solid #eee;">
+            {% endif %}
+
+            <div class="card-header" style="padding: 15px 15px 5px 15px;">
+                <span style="font-weight: bold; color: #E65C00; font-size: 14px;">[{{ post.category|default:"미분류" }}]</span>
+                <h3 style="margin: 10px 0;">{{ post.title }}</h3>
+                <p style="font-size: 12px; color: #888; margin: 0;">
+                    작성일: {{ post.pub_date|date:"Y-m-d" }} | 작성자: {{ post.writer }}
+                </p>
+            </div>
+            
+            <div class="card-body" style="padding: 0 15px 15px 15px;">
+                <p style="line-height: 1.5; color: #444; white-space: pre-wrap;">{{ post.content }}</p>
+            </div>
+            
+            <div class="card-footer" style="padding: 15px; border-top: 1px solid #eee;">
+                <a href="{% url 'main:detail' post.id %}" style="color: #E65C00; font-weight: bold; text-decoration: none;">자세히 보기</a>
+            </div>
+        </div>
+    {% empty %}
+        <div style="padding: 20px; color: #666; text-align: center;">작성된 글이 없습니다.</div>
+    {% endfor %}
+    </div>
+
+    <div style="margin-top: 30px; text-align: right;">
+        {% if not is_mypage %}
+        <a href="{% url 'main:new_blog' %}" style="background-color: #E65C00; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">
+            + 글 작성하기
+        </a>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

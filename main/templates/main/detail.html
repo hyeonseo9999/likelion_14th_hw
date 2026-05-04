@@ -5,22 +5,26 @@
 <div class="detail-wrapper">
 
      <div class="detail-header">
-          <h1>{{ post.title }}</h1>     
+          <span class="detail-category" style="color: #E65C00; font-weight: bold; font-size: 14px;">
+               [{{ post.category|default:"미분류" }}]
+          </span>
+          <h1 style="margin-top: 8px;">{{ post.title }}</h1>     
      </div>
 
-     <div class="detail-footer">
-          <span>작성자: {{ post.writer }}</span>
-          <span>작성일: {{ post.pub_date }}</span>
-          <span>카테고리: {{ post.category }}</span>
+     <div class="detail-footer" style="margin-bottom: 20px; color: #666; font-size: 14px;">
+          <span>작성자: {{ post.writer }}</span> | 
+          <span>작성일: {{ post.pub_date|date:'Y-m-d' }}</span>
      </div>
 
-     <div class="detail-body">
-          <p>{{ post.content }}</p>
+     <div class="detail-body" style="line-height: 1.6; margin-bottom: 40px;">
+          <p>{{ post.content|linebreaks }}</p>
      </div>
 
      <div class="detail-actions">
-          <a href="{% url 'main:edit' post.id %}" class="btn-outline">수정</a>
-          <a href="{% url 'main:delete' post.id %}" class="btn-danger">삭제</a>
+          {% if user.username == post.writer %}
+               <a href="{% url 'main:edit' post.id %}" class="btn-outline">수정</a>
+               <a href="{% url 'main:delete' post.id %}" class="btn-danger">삭제</a>
+          {% endif %}
           <a href="{% url 'main:blogpage' %}" class="btn-primary">목록으로</a>
      </div>
 
