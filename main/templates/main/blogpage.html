@@ -50,7 +50,7 @@
             </div>
             
             <div class="card-body" style="padding: 0 15px 15px 15px;">
-                <p style="line-height: 1.5; color: #444; white-space: pre-wrap;">{{ post.content }}</p>
+                <p style="line-height: 1.5; color: #444; white-space: pre-wrap;">{{ post.content|truncatechars:20 }}</p>
             </div>
             
             <div class="card-footer" style="padding: 15px; border-top: 1px solid #eee;">
