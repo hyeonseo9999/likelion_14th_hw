@@ -1,5 +1,7 @@
 from django.urls import path
+
 from . import views
+from .views import *
 
 app_name = 'main'
 
@@ -14,4 +16,8 @@ urlpatterns = [
     path('update/<int:post_id>/', views.update, name='update'),
     path('delete/<int:post_id>/', views.delete, name='delete'),  
     path('mypage/', views.mypage, name='mypage'), 
+    path('comment_delete/<int:comment_id>/', views.comment_delete, name='comment_delete'),
+    path('comment_edit/<int:comment_id>/', views.comment_edit, name='comment_edit'),
+    path('tags', tag_list, name='tag_list'),
+    path('tags/<int:tag_id>', tag_post_list, name='tag_post_list'),
 ]

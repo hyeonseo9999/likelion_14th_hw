@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post
+from .models import Post,Comment,Tag
 
 def mainpage(request):
     context = {
@@ -21,7 +21,34 @@ def blogpage(request):
 
 def detail(request, post_id): 
     post = get_object_or_404(Post, pk=post_id) 
-    return render(request, 'main/detail.html', {'post': post})
+
+    if request.method == 'POST' and request.user.is_authenticated:
+        new_comments = Comment()
+
+        new_comments.post = post
+        new_comments.writer = request.user  
+        new_comments.content = request.POST['content']
+
+        new_comments.save()
+        return redirect('main:detail', post_id)
+    
+    comments = Comment.objects.filter(post=post)
+    return render(request, 'main/detail.html', {'post': post, 'comments':comments})
+
+def comment_delete(request, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+    post_id = comment.post.id 
+    if comment.writer == request.user:
+        comment.delete()
+    return redirect('main:detail', post_id)
+
+def comment_edit(request, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+    if request.method == 'POST':
+        comment.content = request.POST['content']
+        comment.save()
+        return redirect('main:detail', comment.post.id)
+    return render(request, 'main/comment_edit.html', {'comment': comment})
 
 def create(request):
     if not request.user.is_authenticated:
@@ -30,13 +57,17 @@ def create(request):
     if request.method == 'POST':
         new_post = Post() 
         new_post.title = request.POST['title']
-        new_post.writer = request.user.username
+        new_post.writer = request.user
         new_post.pub_date = request.POST['pub_date']
         new_post.content = request.POST['content']
         new_post.category = request.POST.get('category') 
+
         new_post.save()
+
+        save_tags(new_post)
+
         return redirect('main:detail', new_post.id)
-    return redirect('main:blogpage')
+    
 
 def new_blog(request):
     if not request.user.is_authenticated:
@@ -44,12 +75,13 @@ def new_blog(request):
     return render(request, 'main/new_blog.html')
 
 def edit(request, post_id): 
+
     if not request.user.is_authenticated:
         return redirect('accounts:login')
     
     edit_post = get_object_or_404(Post, pk=post_id) 
 
-    if edit_post.writer != request.user.username:
+    if edit_post.writer != request.user:
         return redirect('main:detail', edit_post.id)
     
     return render(request, 'main/edit.html', {"blog": edit_post})
@@ -60,18 +92,21 @@ def update(request, post_id):
 
     update_post = get_object_or_404(Post, pk=post_id) 
 
-    if update_post.writer != request.user.username:
+    if update_post.writer != request.user:
         return redirect('main:detail', update_post.id)
 
     if request.method == 'POST':
         update_post.title = request.POST['title']
-        update_post.writer = request.user.username
+        update_post.writer = request.user
         update_post.pub_date = request.POST['pub_date']
         update_post.content = request.POST['content']
         update_post.category = request.POST.get('category') 
+
         update_post.save()
+
+        save_tags(update_post)
+
         return redirect('main:detail', update_post.id)
-    return redirect('main:detail', update_post.id)
 
 def delete(request, post_id): 
     if not request.user.is_authenticated:
@@ -79,7 +114,7 @@ def delete(request, post_id):
 
     delete_post = get_object_or_404(Post, pk=post_id) 
 
-    if delete_post.writer != request.user.username:
+    if delete_post.writer != request.user:
         return redirect('main:detail', delete_post.id)
 
     delete_post.delete()
@@ -89,5 +124,29 @@ def mypage(request):
     if not request.user.is_authenticated:
         return redirect('accounts:login')
     
-    my_posts = Post.objects.filter(writer=request.user.username)
+    my_posts = Post.objects.filter(writer=request.user)
     return render(request, 'main/blogpage.html', {'posts': my_posts, 'is_mypage': True})
+
+def save_tags(post):
+    words = post.content.split()
+    tag_list = []
+
+    for w in words:
+        if len(w) > 0:
+            if w[0] == '#':
+                tag_list.append(w[1:])
+
+    post.tags.clear()
+
+    for t in tag_list:
+        tag, boolean = Tag.objects.get_or_create(name=t)
+        post.tags.add(tag)
+
+def tag_list(request):
+    tags = Tag.objects.all()
+    return render(request, 'main/tag_list.html', {'tags' : tags})
+
+def tag_post_list(request, tag_id):
+    tag = get_object_or_404(Tag, pk=tag_id)
+    posts = tag.posts.all()
+    return render(request,'main/tag_post_list.html', {'tag':tag, 'posts':posts})

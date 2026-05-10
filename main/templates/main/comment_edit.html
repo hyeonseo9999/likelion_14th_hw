@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="form-wrapper">
+    <form action="{% url 'main:comment_edit' comment.id %}" method="POST">
+        {% csrf_token %}
+        <div class="form-title">댓글 수정</div> 
+        
+        <div class="form-group">
+            <label for="content">내용</label>
+            <input type="text" id="content" name="content" value="{{ comment.content }}" required>
+        </div>
+
+        <button type="submit">댓글 수정</button>
+    </form>
+</div>
+{% endblock %}
