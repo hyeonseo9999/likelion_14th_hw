@@ -34,14 +34,20 @@ def signup(request):
                 username=username,
                 password=request.POST['password'],
             )
+            
+            profile = newuser.profile
+            profile.nickname = request.POST['nickname']
+            profile.major = request.POST['major']
+            profile.profile_image = request.FILES.get('profile_image')
+            profile.save()
 
-            profile = Profile.objects.create(
-                user=newuser,
-                nickname=request.POST['nickname'],
-                major=request.POST['major'],
-                introduction=request.POST.get('introduction', ''),
-                profile_image=request.FILES.get('profile_image')
-            )
+            # profile = Profile.objects.create(
+            #     user=newuser,
+            #     nickname=request.POST['nickname'],
+            #     major=request.POST['major'],
+            #     introduction=request.POST.get('introduction', ''),
+            #     profile_image=request.FILES.get('profile_image')
+            # )
 
             auth.login(request, newuser)
             return redirect('main:blogpage')

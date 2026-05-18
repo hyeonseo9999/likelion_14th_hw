@@ -12,6 +12,8 @@ class Post(models.Model):
      pub_date = models.DateTimeField()
      category = models.CharField(max_length=10)
      tags = models.ManyToManyField(Tag, related_name='posts', blank=True)
+     like = models.ManyToManyField(User, related_name='likes', blank=True)
+     like_count = models.PositiveIntegerField(default=0)
 
      def summary(self):
           return self.content[:20]
@@ -22,6 +24,8 @@ class Comment(models.Model):
      content = models.TextField()
      pub_date = models.DateTimeField(auto_now_add=True)
      category = models.CharField(max_length=10)
+     comment_like = models.ManyToManyField(User, related_name='comment_likes', blank=True)
+     comment_like_count = models.PositiveIntegerField(default=0)
 
      def __str__(self):
           return f"{self.post.title}: {self.content[:20]} by {self.writer.profile.nickname}"

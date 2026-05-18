@@ -15,12 +15,23 @@
      </div>
 
      <div class="detail-footer" style="margin-bottom: 20px; color: #666; font-size: 14px;">
-          <span>작성자: {{ post.writer.profile.nickname }}</span> | 
+          <a href="{% url 'users:mypage' post.writer.id %}"> 작성자: {{ post.writer }}</a>
           <span>작성일: {{ post.pub_date|date:'Y-m-d' }}</span>
      </div>
 
      <div class="detail-body" style="line-height: 1.6; margin-bottom: 40px;">
           <p>{{ post.content|linebreaks }}</p>
+     </div>
+
+     <div class="detail-likes">
+          <a href = "{% url 'main:likes' post.id %}">
+               {% if user in post.like.all %}
+                    취소
+               {% else %}
+                    좋아요
+               {% endif %}
+          </a>
+          <span>{{ post.like_count }}개</span>
      </div>
 
      <div class="detail-actions">
@@ -52,6 +63,16 @@
                          <span class="comment-date">{{ comment.pub_date|date:"Y.m.d H:i" }}</span>
                     </div>
                     <p class="comment-content">{{ comment.content }}</p>
+                                        <div class="detail-comment_likes">
+                    <a href = "{% url 'main:comment_likes' comment.id %}">
+               {% if user in comment.comment_like.all %}
+                    취소
+               {% else %}
+                    좋아요
+               {% endif %}
+                    </a>
+                    <span>{{ comment.comment_like_count }}개</span>
+                    </div>
                {% if comment.writer == user %}
                     <a href="{% url 'main:comment_edit' comment.id %}">수정</a>
                     <a href="{% url 'main:comment_delete' comment.id %}">삭제</a>   
@@ -59,6 +80,7 @@
                </div>
                {% empty %}
                <p class="comments-empty">아직 댓글이 없습니다. 첫 댓글을 남겨보세요!</p>
+     
                {% endfor %}
           </div>
      </div>
