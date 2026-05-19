@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post,Comment,Tag
+from django.contrib.auth.models import User
+from accounts.models import Profile
 
 def mainpage(request):
     context = {
@@ -120,12 +122,16 @@ def delete(request, post_id):
     delete_post.delete()
     return redirect('main:blogpage')
 
-def mypage(request):
+def mypage(request, id):
     if not request.user.is_authenticated:
         return redirect('accounts:login')
     
-    my_posts = Post.objects.filter(writer=request.user)
-    return render(request, 'main/blogpage.html', {'posts': my_posts, 'is_mypage': True})
+    profile_user = get_object_or_404(User, pk=id)
+    profile = get_object_or_404(Profile, user=profile_user)
+    my_posts = profile_user.post_set.all()
+    is_mypage = (request.user == profile_user)
+
+    return render(request, 'users/mypage.html', {'profile_user': profile_user,'posts': my_posts, 'is_mypage': is_mypage, 'profile': profile})
 
 def save_tags(post):
     words = post.content.split()

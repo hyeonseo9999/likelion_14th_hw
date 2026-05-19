@@ -20,7 +20,7 @@
         <a href="{% url 'main:tag_list' %}" class="navbar-link">태그</a>
         {% if user.is_authenticated %}
             <a href="{% url 'main:new_blog' %}" class="navbar-link">글쓰기</a>
-            <a href="{% url 'main:mypage' %}" class="navbar-link">마이페이지</a>
+            <a href="{% url 'main:mypage' user.id %}" class="navbar-link">마이페이지</a>
             <a href="{% url 'accounts:logout' %}" class="navbar-link">로그아웃</a>
         {% else %}
             <a href="{% url 'accounts:login' %}" class="navbar-link">로그인</a>

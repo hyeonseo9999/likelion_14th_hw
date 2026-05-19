@@ -38,6 +38,7 @@ def signup(request):
             profile = newuser.profile
             profile.nickname = request.POST['nickname']
             profile.major = request.POST['major']
+            profile.introduction = request.POST.get('introduction', '')
             profile.profile_image = request.FILES.get('profile_image')
             profile.save()
 
