@@ -46,6 +46,9 @@ def comment_delete(request, comment_id):
 
 def comment_edit(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
+    if request.user != comment.writer:
+        return redirect('main:detail', comment.post.id)
+
     if request.method == 'POST':
         comment.content = request.POST['content']
         comment.save()
